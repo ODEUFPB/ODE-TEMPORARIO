@@ -42,7 +42,9 @@ from logging import FileHandler, WARNING
 
 
 app =  dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED],     
-)
+        meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}         
+    ])
 server = app.server
       
 app.config.suppress_callback_exceptions = True   
@@ -4456,9 +4458,36 @@ def graf_tit(abas):
                 return 'Gráfico da Relação Docente/Projeto'
 
 
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-181079541-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
 
-
-	
+	  gtag('config', 'UA-181079541-1');
+	</script>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        <div>My Custom header</div>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+        <div>My Custom footer</div>
+    </body>
+</html>
+'''
 
 
 
