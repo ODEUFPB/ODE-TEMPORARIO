@@ -70,7 +70,7 @@ jumbotron =dbc.Jumbotron(
         appear=True,
             style={"transition": "opacity 3000ms ease"}
         ),
-         ],md=2),
+         ],md=2,className='logo-celular'),
 
         dbc.Col([],md=2),
 
@@ -196,7 +196,7 @@ jumbotron_3 =html.Div([dbc.Jumbotron(
            ],no_gutters=True)
 
     ],style={'background-color':'#f7f7f7'}
-)])
+)],className='back_3')
 
 
 
