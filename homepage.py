@@ -28,19 +28,22 @@ jumbotron =dbc.Jumbotron(
 
         #html.Hr(className="my-2"),
         dbc.Fade(
-            html.H3("Bem vindo(a) ao",style={'font-size':'55px'}),
+            html.H3("Bem vindo(a) ao",className='titulo_1'),
             id="fade_bem_vindo_1",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 2000ms ease", 'textAlign':'center','color':'#04383f'}
+            style={"transition": "opacity 2000ms ease", 'textAlign':'center','color':'#04383f'},
+            
+
         ),
 
         dbc.Fade(
-            html.H3("Observatório de Dados",style={'font-size':'55px'}),
+            html.H3("Observatório de Dados",className='titulo_2'),
             id="fade_bem_vindo_1_",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 2500ms ease", 'textAlign':'center','color':'#04383f'}
+            style={"transition": "opacity 2500ms ease", 'textAlign':'center','color':'#04383f'},
+            
         ),
         #dbc.Fade(
         #    html.H1("ao", className="display-3"),
@@ -50,11 +53,12 @@ jumbotron =dbc.Jumbotron(
         #    style={"transition": "opacity 2500ms ease", 'textAlign':'center'}
         #),   
         dbc.Fade(         
-            html.H3("da Extensão",style={'font-size':'55px'}),
+            html.H3("da Extensão",className='titulo_3'),
             id="fade_bem_vindo_2",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 3000ms ease", 'textAlign':'center','color':'#04383f'}
+            style={"transition": "opacity 3000ms ease", 'textAlign':'center','color':'#04383f'},
+            
         ),
 
 
