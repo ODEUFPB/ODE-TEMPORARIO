@@ -117,8 +117,8 @@ jumbotron_2 =html.Div([dbc.Jumbotron(
             style={"transition": "opacity 2000ms ease", 'textAlign':'left','color':'#04383f','display': 'block'}
         ),
         html.Hr(className="my-2",style={'color':'#f7f7f7'}),
-        html.Div(html.Br()),
-        html.Div(html.Br()), 
+        html.Div(html.Br(className="pula_1")),
+        html.Div(html.Br(className="pula_2")), 
         dbc.Fade(         
         html.P(['A extensão universitária tem como objetivo promover o desenvolvimento social e a difusão de conhecimentos para a universidade. Muitas são as ações desenvolvidas na UFPB com este objetivo, onde, por enquanto, existem poucas ferramentas sendo implementadas para avaliar dados gerados e permitir um acompanhamento de tais atividades.',html.Br(),  'Esse projeto visa apresentar os dados da extensão de forma quantitativa, usando ferramentas de análise de dados e propondo métricas que auxiliam sua gestão dentro da UFPB, por meio da PRAC ou até mesmo das Assessorias de Extensão.',html.Br(), 'Esta iniciativa é batizada de Observatório de Dados da Extensão e fornece informações estratégicas para um melhor conhecimento das ações de extensão desenvolvidas na UFPB.'],style={'textAlign':'justify','whiteSpace': 'pre-wrap'}
         ),            id="fade_oque_2",
