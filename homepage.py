@@ -76,7 +76,7 @@ jumbotron =dbc.Jumbotron(
         ),
          ],md=2,className='logo-celular'),
 
-        dbc.Col([],md=2),
+        dbc.Col([],md=2,className='flag_final'),
 
 
        ],align='center'),
