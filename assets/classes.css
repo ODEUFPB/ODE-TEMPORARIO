@@ -172,14 +172,15 @@ font: :800px;
 
 @media (max-width: 1150px) {
   .back {
-  	background-image:none;
+  	background-image:url("ODE_DE_FUNDO.png");
 
   }
 }
 
 @media (max-width: 1150px) {
   .back_2 {
-  	background-image:none;
+  	background-image:url("ODE_DE_FUNDO.png");
+;
 
   }
 }
@@ -246,6 +247,20 @@ font: :800px;
 @media (max-width: 770px) {
   .titulo_3 {
     text-align: left;
+
+  }
+}
+
+@media (max-width: 770px) {
+  .pula_1 {
+    display: : none;
+
+  }
+}
+
+@media (max-width: 770px) {
+  .pula_2 {
+    display: : none;
 
   }
 }
