@@ -130,12 +130,6 @@ font: :800px;
   }
 }
 
-@media (max-width: 770px) {
-  .back {
-    height: 300px;
-    padding: 100px 50px;
-  }
-}
 
 @media (max-width: 2880px) {
   .back2 {
@@ -187,21 +181,30 @@ font: :800px;
 
 @media (max-width: 770px) {
   .titulo_1 {
-  	font-size:40px;
+  	font-size:55px;
 
   }
 }
 
 @media (max-width: 770px) {
   .titulo_2 {
-    font-size:40px;
+    font-size:55px;
 
   }
 }
 
 @media (max-width: 770px) {
   .titulo_3 {
-    font-size:40px;
+    font-size:55px;
 
   }
 }
+
+@media (max-width: 770px) {
+  .flag_final {
+    display:none;
+
+  }
+}
+
+
