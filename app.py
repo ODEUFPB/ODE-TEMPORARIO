@@ -6,13 +6,13 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from mapa import grupos,dados,dict_csv,state_data,geo_data,dict_coordenadas,folder, extension, separator,files_logos, folder_1,files_json,folder_2,files_dados,tooltip,html1,limpa_nome_arquivo_json,limpa_nome_arquivo,gera_cloropleth,gera_camadas_ufpb,gera_icones_da_ufpb,mapa_da_ufpb,mapa
-from joao import fig1, fig2, joao
+#from joao import fig1, fig2, joao
 #from rafael import fig_1,fig_2,fig_3,rafael
-from rafael import rafael
-from manu import manu,Lista_Centros,areas
+#from rafael import rafael
+#from manu import manu,Lista_Centros,areas
 from discentes import discente, graf_rel
-from rafael2 import rafael2, graf_rel
-from relatorio import all_options, relatorio, tab_style, tab_selected_style
+#from rafael2 import rafael2, graf_rel
+#from relatorio import all_options, relatorio, tab_style, tab_selected_style
 from homepage import Homepage
 from quem_somos import quem_somos
 import folium  
@@ -25,7 +25,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from variacao import variacao, ListaCentros_variacao, Lista_Centros
 from docentes import docente, venn
-from rafael3 import rafael3, venn
+#from rafael3 import rafael3, venn
 import pandas as pd
 import base64 
 import matplotlib_venn as vplt
@@ -4486,11 +4486,19 @@ app.index_string = '''
     </body>
 </html>
 '''
-
+@app.callback(
+    Output("navbar-collapse2", "is_open"),
+    [Input("navbar-toggler2", "n_clicks")],
+    [State("navbar-collapse2", "is_open")],
+)
+def toggle_navbar_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 
 if __name__ == '__main__': 
-    app.run_server(port=4062)                            
+    app.run_server(port=4103)                            
 
 
 
