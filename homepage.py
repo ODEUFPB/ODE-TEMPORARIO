@@ -32,7 +32,7 @@ jumbotron =dbc.Jumbotron(
             id="fade_bem_vindo_1",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 2000ms ease", 'textAlign':'center','color':'#04383f'},
+            style={"transition": "opacity 2000ms ease", 'textAlign':'center','color':'#04383f','text-align-last': 'center'},
             
 
         ),
@@ -42,7 +42,7 @@ jumbotron =dbc.Jumbotron(
             id="fade_bem_vindo_1_",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 2500ms ease", 'textAlign':'center','color':'#04383f'},
+            style={"transition": "opacity 2500ms ease", 'textAlign':'center','color':'#04383f','text-align-last': 'center'},
             
         ),
         #dbc.Fade(
@@ -57,7 +57,7 @@ jumbotron =dbc.Jumbotron(
             id="fade_bem_vindo_2",
             is_in=True,
             appear=True,
-            style={"transition": "opacity 3000ms ease", 'textAlign':'center','color':'#04383f'},
+            style={"transition": "opacity 3000ms ease", 'textAlign':'center','color':'#04383f','text-align-last': 'center'},
             
         ),
 
