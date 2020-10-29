@@ -129,3 +129,35 @@ font: :800px;
     height: 500px;
   }
 }
+
+
+
+
+@media (max-width: 1150px) {
+  .logo-celular {
+  	display:none;
+
+  }
+}
+
+
+@media (max-width: 1150px) {
+  .back {
+  	background-image:none;
+
+  }
+}
+
+@media (max-width: 1150px) {
+  .back_2 {
+  	background-image:none;
+
+  }
+}
+
+@media (max-width: 1150px) {
+  .back_3 {
+  	display:none;
+
+  }
+}
