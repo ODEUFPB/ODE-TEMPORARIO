@@ -136,6 +136,14 @@ font: :800px;
   }
 }
 
+@media (max-width: 770px) {
+  .back2 {
+    padding: 50px 5px;
+
+
+  }
+}
+
 @media (max-width: 2880px) {
   .back2 {
     height: 500px;
