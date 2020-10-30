@@ -15,17 +15,12 @@ manu = base64.b64encode(open('Apoio/participantes/manu.jpeg', 'rb').read())
 rafael = base64.b64encode(open('Apoio/participantes/rafael.jpeg', 'rb').read())
 joao = base64.b64encode(open('Apoio/participantes/joao.jpeg', 'rb').read())
 
-body_1 = dbc.Container(
+body_1 = dbc.CardGroup(
+    [
+dbc.Card(
     [
 
-       dbc.Row(
-           [
-
-   
-               dbc.Col(
-                  [
-
-    dbc.CardImg(src='data:image/png;base64,{}'.format(mauricio.decode()), top=True,style={'height':'300px','object-fit': 'cover'}),
+    dbc.CardImg(src='data:image/png;base64,{}'.format(mauricio.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Coordenador", className="card-title"),
@@ -39,15 +34,16 @@ body_1 = dbc.Container(
 
 
 
-
-        ]),
-
-
-               dbc.Col(
-                  [
+    ],
+    style={"width": "18rem"},
+),
 
 
-    dbc.CardImg(src='data:image/png;base64,{}'.format(helon.decode()), top=True,style={'height':'300px','object-fit': 'cover'}),
+
+dbc.Card([
+
+
+    dbc.CardImg(src='data:image/png;base64,{}'.format(helon.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Coordenador Adjunto", className="card-title"),
@@ -63,16 +59,17 @@ body_1 = dbc.Container(
 
 
 
+    ],
+    style={"width": "18rem"},
+),
 
 
 
-        ]),
-
-               dbc.Col(
-                  [
+dbc.Card(
+    [
 
 
-    dbc.CardImg(src='data:image/png;base64,{}'.format(gabriel.decode()), top=True,style={'height':'300px','object-fit': 'cover'}),
+    dbc.CardImg(src='data:image/png;base64,{}'.format(gabriel.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Bolsista Probex", className="card-title"),       
@@ -85,17 +82,17 @@ body_1 = dbc.Container(
     ),
 
 
- 
+     ],
+    style={"width": "18rem"},
+),
+
+
+dbc.Card(
+    [
 
 
 
-]),
-
-               dbc.Col(
-                  [
-
-
-    dbc.CardImg(src='data:image/png;base64,{}'.format(rafael.decode()), top=True,style={'height':'300px','object-fit': 'cover'}),
+    dbc.CardImg(src='data:image/png;base64,{}'.format(rafael.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Bolsista Probex", className="card-title"),
@@ -109,31 +106,30 @@ body_1 = dbc.Container(
 
 
 
+     ],
+    style={"width": "18rem"},
+),
 
 
-]),
+
+
+   ],className="mb-4"
+) 
 
 
 
-])
-
-       ])
-
-body_2 = dbc.Container(
+body_2 = dbc.CardDeck(
     [
 
-       dbc.Row(
-           [
-
    
-               dbc.Col(
-                  [
+dbc.Card(
+    [
 
 
 
 
     
-    dbc.CardImg(src='data:image/png;base64,{}'.format(rafael_m.decode()), top=True,style={'height':'300px','object-fit': 'fill'}),
+    dbc.CardImg(src='data:image/png;base64,{}'.format(rafael_m.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Colaborador", className="card-title"),
@@ -145,19 +141,20 @@ body_2 = dbc.Container(
         ]
     ),
 
-        ]),
+     ],
+    style={"width": "18rem"},
+),
 
 
-               dbc.Col(
-                  [
+      
+dbc.Card(
+    [
+
+ 
 
 
 
-    
-
-
-
-    dbc.CardImg(src='data:image/png;base64,{}'.format(ademar.decode()), top=True,style={'height':'300px','object-fit': 'fill'}),
+    dbc.CardImg(src='data:image/png;base64,{}'.format(ademar.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Colaborador", className="card-title"),
@@ -170,17 +167,20 @@ body_2 = dbc.Container(
     ),
 
 
-        ]),
-
-               dbc.Col(
-                  [
-
+     ],
+    style={"width": "18rem"},
+),
 
 
 
+      
+dbc.Card(
+    [
 
  
-    dbc.CardImg(src='data:image/png;base64,{}'.format(manu.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'right top'}),  
+
+ 
+    dbc.CardImg(src='data:image/png;base64,{}'.format(manu.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),  
     dbc.CardBody(
         [
             html.H4("Voluntário", className="card-title"),
@@ -193,16 +193,19 @@ body_2 = dbc.Container(
     ),
 
 
-]),
 
-               dbc.Col(
-                  [
-
-
+     ],
+    style={"width": "18rem"},
+),
 
 
+      
+dbc.Card(
+    [
 
-    dbc.CardImg(src='data:image/png;base64,{}'.format(joao.decode()), top=True,style={'height':'300px','object-fit': 'cover'}),
+
+
+    dbc.CardImg(src='data:image/png;base64,{}'.format(joao.decode()), top=True,style={'height':'300px','object-fit': 'cover','object-position':'50% 50%'}),
     dbc.CardBody(
         [
             html.H4("Voluntário", className="card-title"),
@@ -214,11 +217,15 @@ body_2 = dbc.Container(
         ]
     ),
 
-]),
+
+     ],
+    style={"width": "18rem"},
+),
 
 
 
-])
+
+
 
        ])
 
@@ -232,18 +239,6 @@ def quem_somos():
     body_2
     ])
     return layout
-
-app = dash.Dash(__name__, external_stylesheets = [dbc.themes.UNITED])
-app.layout = quem_somos
-suppress_callback_exceptions=True
-server = app.server
-
-
- 
-
-
-if __name__ == "__main__":
-    app.run_server(debug=True,use_reloader=False,port=1230)             
 
 
 
