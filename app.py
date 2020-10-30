@@ -41,7 +41,7 @@ from logging import FileHandler, WARNING
 
 
 
-app =  dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED],     
+app =  dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],     
         meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}         
     ])
@@ -4498,7 +4498,7 @@ def toggle_navbar_collapse(n, is_open):
 
 
 if __name__ == '__main__': 
-    app.run_server(port=8958)                            
+    app.run_server(port=8990)                            
 
 
 
@@ -4509,3 +4509,1322 @@ if __name__ == '__main__':
 
 
 
+'Gráfico da Análise Gramatical do(a) {} por Centro (média de 2017,2018 e 2019)'.format(info)
+		
+				}
+			})
+
+
+		if(cont == 3):
+			dc_total1 = dict(zip(centros_variacao,df_consulta1)) #Ordena do menor para o maior
+			dc_total1 = dict(sorted(dc_total1.items(), key=itemgetter(1)))
+			df_total1 = pd.DataFrame(data=dc_total1,index=['PALAVRAS'])
+			x1=df_total1.columns.to_list()
+			y1 = df_total1.loc['PALAVRAS']
+
+			dc_total2 = dict(zip(centros_variacao,df_consulta2)) #Ordena do menor para o maior
+			dc_total2 = dict(sorted(dc_total2.items(), key=itemgetter(1)))
+			df_total2 = pd.DataFrame(data=dc_total2,index=['PALAVRAS'])
+			x2=df_total2.columns.to_list()
+			y2 = df_total2.loc['PALAVRAS']
+
+			dc_total3 = dict(zip(centros_variacao,df_consulta3)) #Ordena do menor para o maior
+			dc_total3 = dict(sorted(dc_total3.items(), key=itemgetter(1)))
+			df_total3 = pd.DataFrame(data=dc_total3,index=['PALAVRAS'])
+			x3=df_total3.columns.to_list()
+			y3 = df_total3.loc['PALAVRAS']
+
+			return dcc.Graph(
+				id='g1_variacao_vocabular',
+				figure={
+					'data': [
+						{'x': x1 , 'y': y1, 'type': 'bar', 'name': informacao[0]},
+						{'x': x2 , 'y': y2, 'type': 'bar', 'name': informacao[1]},
+						{'x': x3 , 'y': y3, 'type': 'bar', 'name': informacao[2]},
+					],
+			'layout': {
+				'title': 'Gráfico da Análise Gramatical do(a) {} por Centro (média de 2017,2018 e 2019)'.format(info)
+				}
+			})
+
+
+
+@app.callback(
+	Output("dropdown_classes_analise","value"),
+	[Input("checklist_classes_analise", "value")],[State("dropdown_classes_analise", "value")]
+
+)
+def retornar_classes_dropdown(value,estado):
+	if('tc' in value):
+		return ["Substantivos", "Adjetivos", "Verbos"]
+	else:
+		return estado 
+
+@app.callback(
+	Output("dropdown_centros_analise","value"),
+	[Input("checklist_centros_analise", "value")],[State("dropdown_centros_analise", "value")]
+)
+def retornar_centros_dropdown(value,estado):
+	if('tc' in value):
+		return ListaCentros_variacao[1:]
+	else:
+		return estado
+	
+	
+##############Nuvem de Palavras
+##############
+##############
+
+@app.callback(
+	Output("texto_grafico_nuvem", "children"),
+	[Input("tab_escolha_grafico","value")]
+)
+
+def graf_tit(tipo_grafico):
+        if tipo_grafico == 'nuvem_palavras':
+          return 'Nuvem de Palavras por Centro, Ano e Campo'
+
+        elif tipo_grafico == 'variabilidade_vocabular':
+          return 'Gráfico da Variabilidade Vocabular por Centro e Campo'
+
+        elif tipo_grafico == 'analise_gramatical':
+          return 'Gráfico da Análise Gramatical por Classe, Centro e Campo'
+
+        elif tipo_grafico == 'contagem_palavras':
+          return 'Contagem de Palavras por Ano'
+
+
+
+
+
+
+
+@app.callback(
+	Output("grafico_nuvem_palavras", "src"),
+	[Input("dropdown_anos_nuvem", "value"),
+	Input("dropdown_centros_nuvem", "value"),
+	Input("tab_escolha_grafico","value"),
+	Input("dropdown_modalidades_nuvem","value")] #######################
+)
+def update_grafico_variacao_vocabular(dropdown_anos_nuvem, dropdown_centros_nuvem, tab_escolha_grafico, dropdown_modalidades_nuvem):
+	f= io.open("Apoio/stopwords_portugues.txt", "r", encoding="utf8") #Importando as stopwords
+	stopwords_portuguese = []
+	stopwords_portuguese = f.readlines()
+	for j,i in enumerate(stopwords_portuguese):
+		if(" \n" in i):
+			stopwords_portuguese[j] = stopwords_portuguese[j].split(" \n")[0]
+		elif("\n" in i):
+			stopwords_portuguese[j] = stopwords_portuguese[j].split("\n")[0]
+
+
+	if(tab_escolha_grafico == "nuvem_palavras"):
+		if( "Resumo" in dropdown_modalidades_nuvem):
+			info = "Resumo"
+			df_2017 = pd.read_csv("Apoio/Dataframes/lista_palavras_resumo_2017.csv")
+			df_2018 = pd.read_csv("Apoio/Dataframes/lista_palavras_resumo_2018.csv")
+			df_2019 = pd.read_csv("Apoio/Dataframes/lista_palavras_resumo_2019.csv")
+
+		elif( "Metodologia" in dropdown_modalidades_nuvem):
+			info = "Metodologia"
+			df_2017 = pd.read_csv("Apoio/Dataframes/lista_palavras_metodologia_2017.csv")
+			df_2018 = pd.read_csv("Apoio/Dataframes/lista_palavras_metodologia_2018.csv")
+			df_2019 = pd.read_csv("Apoio/Dataframes/lista_palavras_metodologia_2019.csv")
+
+		elif( "Justificativa" in dropdown_modalidades_nuvem):
+			info = "Justificativa"
+			df_2017 = pd.read_csv("Apoio/Dataframes/lista_palavras_justificativa_2017.csv")
+			df_2018 = pd.read_csv("Apoio/Dataframes/lista_palavras_justificativa_2018.csv")
+			df_2019 = pd.read_csv("Apoio/Dataframes/lista_palavras_justificativa_2019.csv")
+
+		elif( "Objetivo" in dropdown_modalidades_nuvem):
+			info = "Objetivo"
+			df_2017 = pd.read_csv("Apoio/Dataframes/lista_palavras_objetivo_2017.csv")
+			df_2018 = pd.read_csv("Apoio/Dataframes/lista_palavras_objetivo_2018.csv")
+			df_2019 = pd.read_csv("Apoio/Dataframes/lista_palavras_objetivo_2019.csv")
+
+		elif("Fundamentacao" in dropdown_modalidades_nuvem):
+			info = "Fundamentacão Teórica"
+			df_2017 = pd.read_csv("Apoio/Dataframes/lista_palavras_fundamentacao_2017.csv")
+			df_2018 = pd.read_csv("Apoio/Dataframes/lista_palavras_fundamentacao_2018.csv")
+			df_2019 = pd.read_csv("Apoio/Dataframes/lista_palavras_fundamentacao_2019.csv")
+
+		
+
+		df_consulta1 = []
+		df_consulta2 = []
+		df_consulta3 = []
+		centros_variacao = []
+		texto = ""
+
+		##Pegando os centros desejados
+		if('2017' in dropdown_centros_nuvem and '2018' in dropdown_centros_nuvem and '2019' in dropdown_centros_nuvem):
+			contador = 3
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2017.loc['PALAVRAS'][i])
+					df_consulta2.append(df_2018.loc['PALAVRAS'][i])
+					df_consulta3.append(df_2019.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+					del df_consulta2[j]
+					del df_consulta3[j]
+
+
+		elif('2017' in dropdown_centros_nuvem and '2018' in dropdown_centros_nuvem):
+			contador = 2
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2017.loc['PALAVRAS'][i])
+					df_consulta2.append(df_2018.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+					del df_consulta2[j]
+
+
+		elif('2017' in dropdown_centros_nuvem and '2019' in dropdown_centros_nuvem):
+			contador = 2
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2017.loc['PALAVRAS'][i])
+					df_consulta2.append(df_2019.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+					del df_consulta2[j]
+
+		elif('2018' in dropdown_centros_nuvem and '2019' in dropdown_centros_nuvem):
+			contador = 2
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2018.loc['PALAVRAS'][i])
+					df_consulta2.append(df_2019.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+					del df_consulta2[j]
+
+
+		elif('2017' in dropdown_anos_nuvem):
+			contador = 1
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2017.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+
+
+		elif('2018' in dropdown_anos_nuvem):
+			contador  = 1
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2018.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+
+
+		elif('2019' in dropdown_anos_nuvem):
+			contador = 1
+			for i in dropdown_centros_nuvem: 
+				if(i in ListaCentros_variacao[1:]):
+					centros_variacao.append(i)
+					df_consulta1.append(df_2019.loc['PALAVRAS'][i])
+
+			for j,i in enumerate(centros_variacao):
+				if i not in dropdown_centros_nuvem:
+					del centros_variacao[j]
+					del df_consulta1[j]
+
+
+
+		if(contador==1):
+			texto_nuvem = ""
+			for i in df_consulta1:
+				texto_nuvem += i
+			wordcloud = WordCloud(max_font_size=60, max_words=20, background_color="white", stopwords=stopwords_portuguese).generate(texto_nuvem)
+			fig, ax = plt.subplots()
+			ax.imshow(wordcloud, interpolation='bilinear')
+			ax.set_axis_off()
+			plt.savefig('Apoio/nuvem/nuvem.png')
+			encoded_image = base64.b64encode(open("Apoio/nuvem/nuvem.png", 'rb').read())
+			src='data:image/png;base64,{}'.format(encoded_image.decode())
+			return src
+
+
+		elif(contador==2):
+			texto_nuvem = ""
+			for i in df_consulta1:
+				texto_nuvem += i
+
+			for i in df_consulta2:
+				texto_nuvem += i
+
+			wordcloud = WordCloud(max_font_size=60, max_words=20, background_color="white", stopwords=stopwords_portuguese).generate(texto_nuvem)
+			fig, ax = plt.subplots()
+			ax.imshow(wordcloud, interpolation='bilinear')
+			ax.set_axis_off()
+			plt.savefig('Apoio/nuvem/nuvem.png')
+			encoded_image = base64.b64encode(open("Apoio/nuvem/nuvem.png", 'rb').read())
+			src='data:image/png;base64,{}'.format(encoded_image.decode())
+			return src
+
+
+		elif(contador==3):
+			texto_nuvem = ""
+			for i in df_consulta1:
+				texto_nuvem += i
+
+			for i in df_consulta2:
+				texto_nuvem += i
+
+			for i in df_consulta3:
+				texto_nuvem += i
+
+			wordcloud = WordCloud(max_font_size=60, max_words=20, background_color="white", stopwords=stopwords_portuguese).generate(texto_nuvem)
+			fig, ax = plt.subplots()
+			ax.imshow(wordcloud, interpolation='bilinear')
+			ax.set_axis_off()
+			plt.savefig('Apoio/nuvem/nuvem.png')
+			encoded_image = base64.b64encode(open("Apoio/nuvem/nuvem.png", 'rb').read())
+			src='data:image/png;base64,{}'.format(encoded_image.decode())
+			return src
+
+	else:
+		image_filename = 'Apoio/nuvem/blank.png'
+		encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+		src='data:image/png;base64,{}'.format(encoded_image.decode())
+		return src
+
+
+
+@app.callback(
+	Output("dropdown_anos_nuvem","value"),
+	[Input("checklist_anos_nuvem", "value")],[State("dropdown_anos_nuvem", "value")]
+
+)
+def retornar_anos_dropdown(value,estado):
+	if('ta' in value):
+		return ["2017", "2018", "2019"]
+	else:
+		return estado
+		
+
+
+@app.callback(
+	Output("dropdown_centros_nuvem","value"),
+	[Input("checklist_centros_nuvem", "value")],[State("dropdown_centros_nuvem", "value")]
+)
+def retornar_anos_dropdown(value,estado):
+	if('tc' in value):
+		return ListaCentros_variacao[1:]
+	else:
+		return estado	
+
+
+
+ ##########Contagem Palavras
+@app.callback(
+	dash.dependencies.Output("grafico_contagem_palavras", "children"),
+	[dash.dependencies.Input("dropdown_anos_contagem", "value"),
+	dash.dependencies.Input("palavra_contagem", "value"),
+	dash.dependencies.Input("dropdown_centros_contagem", "value"),
+	dash.dependencies.Input("tab_escolha_grafico","value")] #######################
+)
+def grafico(dropdown_anos_contagem, palavra_contagem,dropdown_centros_contagem,tab_escolha_grafico):
+	if tab_escolha_grafico == "contagem_palavras":
+			centros_selecionados = []
+			tamanho_anos = [0]
+			anos = '0'
+			palavras_input_ = str(palavra_contagem)
+			palavras_input = palavras_input_.lower()
+			palavras_input = und.unidecode(palavras_input)
+			palavras = palavras_input.split(',')
+	
+
+			df_17= pd.read_csv('Apoio/dataset_2017.csv')
+			df_18= pd.read_csv('Apoio/dataset_2018.csv')
+			df_19= pd.read_csv('Apoio/dataset_2019.csv')
+
+
+			if ('2017' in dropdown_anos_contagem and '2018' in dropdown_anos_contagem and '2019' in dropdown_anos_contagem):
+					tamanho_anos.clear()
+					anos = '2017,2018 e 2019'
+					tamanho_anos.append(3)
+					textos_2017 = pd.read_csv('Apoio/Dataframes/textos_contagem_2017.csv')
+					textos_2018 = pd.read_csv('Apoio/Dataframes/textos_contagem_2018.csv')
+					textos_2019 = pd.read_csv('Apoio/Dataframes/textos_contagem_2019.csv')
+
+					normalizado_17 = []
+					normalizado_18 = []
+					normalizado_19 = []
+					for i in Lista_Centros:
+							text = list(textos_2017[i])
+							text = ' '.join(text)
+							text1 = list(textos_2018[i])
+							text1 = ' '.join(text1)
+							text2 = list(textos_2019[i])
+							text2 = ' '.join(text2)
+							encontrados_17 = []
+							encontrados_18 = []
+							encontrados_19 = []
+
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									p1 = palavra.findall(text1)
+									tam1 = len(p1)
+									p2 = palavra.findall(text2)
+									tam2 = len(p2)
+									encontrados_17.append(tam)
+									encontrados_18.append(tam1)
+									encontrados_19.append(tam2)
+							total = sum(encontrados_17) # atribui o números de elementos da lista a uma variável
+							total1 = sum(encontrados_18)
+							total2 = sum(encontrados_19)
+							quant = int(df_17[i])
+							quant1 = int(df_18[i])
+							quant2 = int(df_19[i])
+							normalizado_17.append(total/quant)
+							normalizado_18.append(total1/quant1)
+							normalizado_19.append(total2/quant2)   
+				  
+
+			elif ('2017' in dropdown_anos_contagem and '2018' in dropdown_anos_contagem):
+					tamanho_anos.clear()
+					anos = '2017 e 2018'
+					tamanho_anos.append(2)
+					textos_2017 = pd.read_csv('Apoio/Dataframes/textos_contagem_2017.csv')
+					textos_2018 = pd.read_csv('Apoio/Dataframes/textos_contagem_2018.csv')
+
+					normalizado_17 = []
+					normalizado_18 = []
+					for i in Lista_Centros:
+							text = list(textos_2017[i])
+							text = ' '.join(text)
+							text1 = list(textos_2018[i])
+							text1 = ' '.join(text1)
+							encontrados_17 = []
+							encontrados_18 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									p1 = palavra.findall(text1)
+									tam1 = len(p1)
+									encontrados_17.append(tam)
+									encontrados_18.append(tam1)
+							total = sum(encontrados_17) # atribui o números de elementos da lista a uma variável
+							total1 = sum(encontrados_18)
+							quant = int(df_17[i])
+							quant1 = int(df_18[i])
+							normalizado_17.append(total/quant)
+							normalizado_18.append(total1/quant1)   
+		
+			
+			elif ('2018' in dropdown_anos_contagem and '2019' in dropdown_anos_contagem):
+					tamanho_anos.clear()
+					anos = '2018 e 2019'
+					tamanho_anos.append(2)
+					textos_2018 = pd.read_csv('Apoio/Dataframes/textos_contagem_2018.csv')
+					textos_2019 = pd.read_csv('Apoio/Dataframes/textos_contagem_2019.csv')
+
+					normalizado_17 = []
+					normalizado_18 = []
+					for i in Lista_Centros:
+							text = list(textos_2018[i])
+							text = ' '.join(text)
+							text1 = list(textos_2019[i])
+							text1 = ' '.join(text1)
+							encontrados_17 = []
+							encontrados_18 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									p1 = palavra.findall(text1)
+									tam1 = len(p1)
+									encontrados_17.append(tam)
+									encontrados_18.append(tam1)
+							total = sum(encontrados_17) # atribui o números de elementos da lista a uma variável
+							total1 = sum(encontrados_18)
+							quant = int(df_18[i])
+							quant1 = int(df_19[i])
+							normalizado_17.append(total/quant)
+							normalizado_18.append(total1/quant1)   
+			
+							   
+			
+				
+			elif ('2017' in dropdown_anos_contagem and '2019' in dropdown_anos_contagem):
+					tamanho_anos.clear()
+					anos = '2017 e 2019'
+					tamanho_anos.append(2)
+					textos_2017 = pd.read_csv('Apoio/Dataframes/textos_contagem_2017.csv')
+					textos_2019 = pd.read_csv('Apoio/Dataframes/textos_contagem_2019.csv')
+
+					normalizado_17 = []
+					normalizado_18 = []
+					for i in Lista_Centros:
+							text = list(textos_2017[i])
+							text = ' '.join(text)
+							text1 = list(textos_2019[i])
+							text1 = ' '.join(text1)
+							encontrados_17 = []
+							encontrados_18 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									p1 = palavra.findall(text1)
+									tam1 = len(p1)
+									encontrados_17.append(tam)
+									encontrados_18.append(tam1)
+							total = sum(encontrados_17) # atribui o números de elementos da lista a uma variável
+							total1 = sum(encontrados_18)
+							quant = int(df_17[i])
+							quant1 = int(df_19[i])
+							normalizado_17.append(total/quant)
+							normalizado_18.append(total1/quant1)   
+				
+				
+				
+			elif ('2017' in dropdown_anos_contagem ):
+					tamanho_anos.clear()
+					anos = '2017'
+					tamanho_anos.append(1)
+					textos_2017 = pd.read_csv('Apoio/Dataframes/textos_contagem_2017.csv')
+
+					normalizado_17 = []
+					for i in Lista_Centros:
+							text = list(textos_2017[i])
+							text = ' '.join(text)
+							encontrados_17 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									encontrados_17.append(tam)
+							total = sum(encontrados_17)
+							quant = int(df_17[i])
+							normalizado_17.append(total/quant)    
+			
+			elif ('2018' in dropdown_anos_contagem ):
+					tamanho_anos.clear()
+					anos = '2018'
+					tamanho_anos.append(1)
+					textos_2018 = pd.read_csv('Apoio/Dataframes/textos_contagem_2018.csv')
+
+					normalizado_17 = []
+					for i in Lista_Centros:
+							text = list(textos_2018[i])
+							text = ' '.join(text)
+							encontrados_17 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									encontrados_17.append(tam)
+							total = sum(encontrados_17)
+							quant = int(df_18[i])
+							normalizado_17.append(total/quant)    
+			
+				
+			elif ('2019' in dropdown_anos_contagem ):
+					tamanho_anos.clear()
+					anos = '2019'
+					tamanho_anos.append(1)
+					textos_2019 = pd.read_csv('Apoio/Dataframes/textos_contagem_2019.csv')
+
+					normalizado_17 = []
+					for i in Lista_Centros:
+							text = list(textos_2019[i])
+							text = ' '.join(text)
+							encontrados_17 = []
+							for n in range(0, len(palavras)):
+									palavra = re.compile(palavras[n])
+									p = palavra.findall(text)
+									tam = len(p)
+									encontrados_17.append(tam)
+							total = sum(encontrados_17)
+							quant = int(df_19[i])
+							normalizado_17.append(total/quant)    
+			lista_centros = ['CCS','CEAR','CCEN','CT','CCM','CBIOTEC','CTDR','CCHLA','CCTA','CCHSA','CCSA','CI','CCAE','CCJ','CCA','CE']
+			for i in dropdown_centros_contagem :
+				if (i in Lista_Centros[0:]):
+					centros_selecionados.append(i)
+				else:
+					None
+			'''
+			for j,i in enumerate(centros_selecionados):
+				if i not in dropdown_centros_contagem :
+					del centros_selecionados[j]
+			print(centros_selecionados, flush = True)
+			'''
+			
+				
+			if(tamanho_anos[0] == 1):
+					data = dict(zip(Lista_Centros,normalizado_17))
+					data = dict(sorted(data.items(),key=itemgetter(1)))
+					dataframe_ = pd.DataFrame(data = data, index = ['numero'])
+					dataframe = dataframe_[centros_selecionados]
+					valores = list(dataframe.loc['numero'])
+					valores_arredondados = []
+		 
+					for j in valores:
+							val = round(j,2)
+							valores_arredondados.append(val)
+					x = dataframe.columns.to_list()
+					y = valores_arredondados
+					return dcc.Graph(
+							id='g1_contagem_palavras',
+							figure={
+									'data': [
+											{'x': x , 'y': y, 'type': 'bar', 'name': anos},
+											],
+									'layout': {
+											'title': 'Gráfico da quantidade das palavras - {} normalizadas por Centro - ({})'.format(palavras_input_, anos)
+											}
+									})
+			elif(tamanho_anos[0] == 2):
+					data = dict(zip(Lista_Centros,normalizado_17))
+					data = dict(sorted(data.items(),key=itemgetter(1)))
+					dataframe_ = pd.DataFrame(data = data, index = ['numero'])
+					dataframe = dataframe_[centros_selecionados]
+					valores = list(dataframe.loc['numero'])
+					valores_arredondados = []
+					for j in valores:
+							val = round(j,2)
+							valores_arredondados.append(val)
+					x = dataframe.columns.to_list()
+					y = valores_arredondados
+
+					data2 = dict(zip(Lista_Centros,normalizado_18))
+					data2 = dict(sorted(data2.items(),key=itemgetter(1)))
+					dataframe2_ = pd.DataFrame(data = data2, index = ['numero'])
+					dataframe2 = dataframe2_[centros_selecionados]
+					valores2 = list(dataframe2.loc['numero'])
+					valores_arredondados2 = []
+					for j in valores2:
+							val = round(j,2)
+							valores_arredondados2.append(val)
+					x2 = dataframe2.columns.to_list()
+					y2 = valores_arredondados2
+
+					return dcc.Graph(
+							id='g1_contagem_palavras',
+							figure={
+									'data': [
+											{'x': x , 'y': y, 'type': 'bar', 'name': anos.split('e')[0]},
+											{'x': x2 , 'y': y2, 'type': 'bar', 'name':  str(anos.split('e')[1]).split(" ")[1]}
+											],
+									'layout': {
+											'title': 'Gráfico da quantidade das palavras - {} normalizadas por Centro - ({})'.format(palavras_input_, anos)
+											}
+									})
+			
+			elif(tamanho_anos[0] == 3):
+
+					data = dict(zip(Lista_Centros,normalizado_17))
+					data = dict(sorted(data.items(),key=itemgetter(1)))
+					dataframe_ = pd.DataFrame(data = data, index = ['numero'])
+					dataframe = dataframe_[centros_selecionados]
+					valores = list(dataframe.loc['numero'])
+					valores_arredondados = []
+					for j in valores:
+							val = round(j,2)
+							valores_arredondados.append(val)
+					x = dataframe.columns.to_list()
+					y = valores_arredondados
+
+
+					data2 = dict(zip(Lista_Centros,normalizado_18))
+					data2 = dict(sorted(data2.items(),key=itemgetter(1)))
+					dataframe2_ = pd.DataFrame(data = data2, index = ['numero'])
+					dataframe2 = dataframe2_[centros_selecionados]
+					valores2 = list(dataframe2.loc['numero'])
+					valores_arredondados2 = []
+					for j in valores2:
+							val = round(j,2)
+							valores_arredondados2.append(val)
+					x2 = dataframe2.columns.to_list()
+					y2 = valores_arredondados2
+
+					data3 = dict(zip(Lista_Centros,normalizado_19))
+					data3 = dict(sorted(data3.items(),key=itemgetter(1)))
+					dataframe3_ = pd.DataFrame(data = data3, index = ['numero'])
+					dataframe3 = dataframe3_[centros_selecionados]
+					valores3 = list(dataframe3.loc['numero'])
+					valores_arredondados3 = []
+					for j in valores3:
+							val = round(j,2)
+							valores_arredondados3.append(val)
+					x3 = dataframe3.columns.to_list()
+					y3 = valores_arredondados3
+
+					return dcc.Graph(
+							id='g1_contagem_palavras',
+							figure={
+									'data': [
+											{'x': x , 'y': y, 'type': 'bar', 'name': anos.split(',')[0]},
+											{'x': x2 , 'y': y2, 'type': 'bar', 'name': str(anos.split(',')[1]).split("e")[0]},
+											{'x': x3 , 'y': y3, 'type': 'bar', 'name': str(anos.split('e')[1]).split(" ")[1]}
+											],
+									'layout': {
+											'title': 'Gráfico da quantidade das palavras - {} normalizadas por Centro - ({})'.format(palavras_input_, anos)
+											}
+									})		
+@app.callback(
+	Output("dropdown_anos_contagem","value"),
+	[Input("checklist_anos_contagem", "value")],[State("dropdown_anos_contagem", "value")]
+)
+def retornar_anos_dropdown(value,estado):
+	if('ta' in value):
+		return ["2017","2018","2019"]
+	else:
+		return estado
+
+@app.callback(
+	Output("dropdown_centros_contagem","value"),
+	[Input("checklist_centros_contagem", "value")],[State("dropdown_centros_contagem", "value")]
+)
+def retornar_anos_dropdown(value,estado):
+	if('tc' in value):
+		return ['CCS','CEAR','CCEN','CT','CCM','CBIOTEC','CTDR','CCHLA','CCTA','CCHSA','CCSA','CI','CCAE','CCJ','CCA','CE']
+	else:
+		return estado
+
+#Relatório dos Gráficos - Estudo Vocabular
+@app.callback(
+	Output("relatorio_estudo_vocabular","children"),
+	[Input("tab_escolha_grafico", "value"),
+	Input("dropdown_anos_variacao","value"),
+	Input("dropdown_centros_variacao","value"),
+	Input("dropdown_modalidades_variacao","value"),
+	Input("dropdown_classes_analise","value"),
+	Input("dropdown_centros_analise","value"),
+	Input("dropdown_modalidades_analise","value"),
+	Input("dropdown_anos_nuvem", "value"),
+	Input("dropdown_centros_nuvem", "value"),
+	Input("dropdown_modalidades_nuvem","value"),
+	Input("dropdown_anos_contagem", "value"),
+	Input("dropdown_centros_contagem", "value"),
+	Input("palavra_contagem","value")],
+)
+def relatorio_estudo_vocabular(value, dropdown_anos_variacao, dropdown_centros_variacao, dropdown_modalidades_variacao, dropdown_classes_analise, dropdown_centros_analise,dropdown_modalidades_analise, dropdown_anos_nuvem, dropdown_centros_nuvem,dropdown_modalidades_nuvem,dropdown_anos_contagem,dropdown_centros_contagem, palavra_contagem):
+	#######variação vocabular
+	try:
+		dropdown_anos_variacao = sorted(dropdown_anos_variacao)
+		anos_variacao = ""
+		for i in dropdown_anos_variacao:
+		    if('2017' not in anos_variacao and '2018' not in anos_variacao and '2019' not in anos_variacao):
+		        anos_variacao = anos_variacao + str(i)
+		    else:
+		        anos_variacao = anos_variacao + "," + str(i)
+
+		centros_variacao = ""
+		for i in dropdown_centros_variacao:
+		    if('C' not in centros_variacao):
+		        centros_variacao = centros_variacao + str(i.split(' -')[0])
+		    else:
+		        centros_variacao = centros_variacao + "," + str(i.split(' -')[0])
+
+		campo_variacao = dropdown_modalidades_variacao
+		if(campo_variacao == None):
+			campo_variacao = ""
+	######Análise Gramatical
+	except:
+		None
+
+	try:	
+		classes_analise = ""
+
+		for i in dropdown_classes_analise:
+			if(classes_analise != ''):
+				classes_analise = classes_analise + "," +i
+			else:
+				classes_analise = classes_analise + i
+
+
+		centros_analise =""
+		for i in dropdown_centros_analise:
+		    if('C' not in centros_analise):
+		        centros_analise = centros_analise + str(i.split(' -')[0])
+		    else:
+		        centros_analise = centros_analise + "," + str(i.split(' -')[0])
+
+		modalidades_analise = ""
+		for i in dropdown_modalidades_analise:
+			modalidades_analise += i
+
+		if(modalidades_analise == None):
+			modalidades_analise = ""
+
+	except:
+		None
+
+
+
+	#Nuvem de Palavras
+	try:
+		anos_nuvem = ""
+		for i in dropdown_anos_nuvem:
+		    if('2017' not in anos_nuvem and '2018' not in anos_nuvem and '2019' not in anos_nuvem):
+		        anos_nuvem = anos_nuvem + str(i)
+		    else:
+		        anos_nuvem = anos_nuvem + "," + str(i)
+
+		centros_nuvem = ""
+		for i in dropdown_centros_nuvem:
+		    if('C' not in centros_nuvem):
+		        centros_nuvem = centros_nuvem + str(i.split(' -')[0])
+		    else:
+		        centros_nuvem = centros_nuvem + "," + str(i.split(' -')[0])
+
+		campo_nuvem = ""
+		for i in dropdown_modalidades_nuvem:
+			campo_nuvem += i
+
+		if(campo_nuvem == None):
+			campo_nuvem = ""
+
+
+	#Contagem de Palavras
+
+	except:
+		None
+
+	try:
+		anos_contagem = ""
+		for i in dropdown_anos_contagem:
+		    if('2017' not in anos_contagem and '2018' not in anos_contagem and '2019' not in anos_contagem):
+		        anos_contagem = anos_contagem + str(i)
+		    else:
+		        anos_contagem = anos_contagem + "," + str(i)
+
+
+		centros_contagem = ""
+		for i in dropdown_centros_contagem:
+		    if('C' not in centros_contagem):
+		        centros_contagem = centros_contagem + str(i.split(' -')[0])
+		    else:
+		        centros_contagem = centros_contagem + "," + str(i.split(' -')[0])
+
+	except:
+		None
+
+
+
+			
+
+	if value == 'variabilidade_vocabular':
+		try:
+			return f'''O Gráfico apresentado mostra a Varibilidade Vocabular dos projetos de extensão da UFPB por Centro(s), Ano(s) e Campo. A variabilidade vocabular consiste na quantidade média de palavras dos projetos dos centros escolhidos, isto é o total de palavras dividido pelo total de projetos considerados daquele centro. Nesse caso em específico, você está observando a Variabilidade Vocabular do(s) Ano(s): {anos_variacao}, no(s) Centro(s): {centros_variacao}, e no Campo {campo_variacao}'''
+		except:
+			return ""
+
+	elif value == 'analise_gramatical' :
+		try:
+			return f'''O Gráfico apresentado mostra uma Análise Vocabular dos projetos de extensão da UFPB por Classe(s) de Palavra(s), Centro(s) e Campo. A análise gramatical consiste na quantidade média de elementos de uma determinada classe gramatical (a quantidade total daquela classe naquele centro dividida pela quantidade total de projetos daquele centro). Nesse caso em específico, você está observando uma Análise Gramatical da(s) classe(s): {classes_analise}, no(s) centro(s): {centros_analise}, e no campo {modalidades_analise}, considerando uma média dos anos de 2017, 2018 e 2019.'''
+		except:
+			return ""
+
+	elif value == 'nuvem_palavras' :
+		try:
+			return f'''O gráfico apresentado mostra uma Nuvem de Palavras com as palavras mais relevantes de determinado(s) Centro(s) em determinado(s) Ano(s). A nuvem de palavras consiste nas 20 principais palavras dos centros escolhidos nos anos escolhidos, ou seja, se você escolheu mais de um centro em mais de um ano, todas as palavras foram consideradas para a confecção desta nuvem. Nesse caso em específico, você está observando a Nuvem de Palavras do(s) Ano(s): {anos_nuvem}, no(s) Centro(s): {centros_nuvem}, e no campo {campo_nuvem}'''
+	
+		except:
+			return ""
+
+	elif value == 'contagem_palavras':
+		try:
+			return f'''Este gráfico mostra o número de ocorrências das palavras pesquisadas normalizadas por centro, podendo nos apontar as tendências de área de envolvimento comparadas por centro. Os campos que foram levados em consideração para a contagem foram : Justificativa, Metodologia, Fundamentação Teórica e Objetivos. Nesse caso em específico, você está observando o gráfico referente a contagem da palavra "{palavra_contagem}", no(s) Ano(s) {anos_contagem}, e no(s) Centro(s): {centros_contagem}'''
+		except:
+			return ""
+	else:
+		return ""
+
+
+###RAFAEL2###
+
+def ins (r, s):
+    ins_loc = r.index.max()
+    if np.isnan(ins_loc):
+        r.loc[0] = s
+    else:
+        r.loc[ins_loc + 1] = s
+
+@app.callback(
+        Output("area2", "options"),
+        [Input("centro2", "value"), Input("ano2", "value")],
+)
+
+def op (centro, ano):
+        print(ano)
+        mb = pd.read_csv('Apoio/mb_area.csv')
+        area = list(set(mb[(mb['a'].isin(centro))&(mb['ano'].isin(ano))]['area'].dropna()))
+        area.insert(0, 'Todas as areas')
+        if 0 in area:
+                area.remove(0)
+        area = [{'label': j, 'value': j} for j in area]
+        return area
+
+
+
+@app.callback(
+	Output("graph_discentes2", "children"),
+	[Input("centro2", "value"), Input("area2", "value"),
+	Input("ano2", "value"), Input("tabs-example2","value"), Input('rafa2','style')],
+)
+def update_graph_discentes(centro, area, ano, tab, rafa2):
+    if tab == 'tab2-1':
+        z = pd.DataFrame()
+        z2 = pd.DataFrame()
+        mb = pd.read_csv('Apoio/mb_area.csv')
+        pt = pd.read_csv('Apoio/pt_area.csv')
+        for x in sorted(ano):
+                z = pd.concat([mb[(mb['ano']==x)&(mb['a'].isin(centro))&(mb['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']), z], ignore_index=True)
+                z2 = pd.concat([pt[(pt['ano']==x)&(pt['a'].isin(centro))&(pt['area'].isin(area))].drop_duplicates(subset = ['id_discente_extensao']), z2], ignore_index=True)
+        evo = pd.DataFrame(columns=['centro','ano','rel'])
+        for i in centro:
+                for x in ano:
+                        b = []
+                        b.append(i)
+                        b.append(x)
+                        if len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DOCENTE')]['id_pessoa']) != 0:
+                                if x == 2020:
+                                        b.append(len(z2[(z2['ano']==x)&(z2['a']==i)]['id_discente_extensao'].unique())/len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DOCENTE')]['id_pessoa'].unique()))
+                                else:
+                                        b.append((len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DISCENTE')]['id_pessoa'].unique()))/len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DOCENTE')]['id_pessoa'].unique()))
+                        else:
+                                b.append(0)
+                        ins(evo, b)
+        evo[['rel']] = evo[['rel']].applymap(lambda x : "%.2f" % x)
+        evo = evo.sort_values(['ano', 'centro'])
+        graf_rel = make_subplots(rows=1, cols=1,row_titles = ['Razão Alunos/Professores'],  shared_yaxes=True)
+        for a in ano: 
+            graf_rel.add_trace(go.Bar(x=evo[evo['centro'].isin(centro)]['centro'].to_list(), y=evo[(evo['centro'].isin(centro))&(evo['ano']==a)]['rel'].to_list(), name=str(a), text=evo[(evo['centro'].isin(centro))&(evo['ano']==a)]['rel'].to_list(), textposition='auto',),1,1)
+            graf_rel.update_layout(coloraxis=dict(colorscale='Bluered_r'), showlegend=True)
+            graf_rel.update_traces(marker=dict(line=dict(color='#000000', width=0.5)))
+        
+        return dcc.Graph(figure=graf_rel)
+    elif tab == 'tab2-2':
+        z = pd.DataFrame()
+        z2 = pd.DataFrame()
+        mb = pd.read_csv('Apoio/mb_area.csv')
+        pt = pd.read_csv('Apoio/pt_area.csv')
+        for x in sorted(ano):
+                z = pd.concat([mb[(mb['ano']==x)&(mb['a'].isin(centro))&(mb['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']), z], ignore_index=True)
+                z2 = pd.concat([pt[(pt['ano']==x)&(pt['a'].isin(centro))&(pt['area'].isin(area))].drop_duplicates(subset = ['id_discente_extensao']), z2], ignore_index=True)
+        evo = pd.DataFrame(columns=['centro','ano','quant'])
+        for i in centro:
+                for x in sorted(ano):
+                        b = []
+                        b.append(i)
+                        b.append(x)
+                        if x == 2020:
+                                b.append(len(z2[(z2['ano']==x)&(z2['a']==i)]['id_discente_extensao'].unique()))
+                        else:
+                                b.append((len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DISCENTE')]['id_pessoa'].unique())))
+                        ins(evo, b)
+        evo = evo.sort_values(['ano', 'centro'])
+        graf_rel = make_subplots(rows=1, cols=1,row_titles = ['Quantidade de Discentes'],  shared_yaxes=True)
+        for a in ano:
+                graf_rel.add_trace(go.Bar(x=evo[evo['ano']==a]['centro'].to_list(), y=evo[evo['ano']==a]['quant'].to_list(), name=str(a), text=evo[evo['ano']==a]['quant'].to_list(), textposition='auto',),1,1)
+                graf_rel.update_layout(coloraxis=dict(colorscale='Bluered_r'), showlegend=True)
+                graf_rel.update_traces(marker=dict(line=dict(color='#000000', width=0.5)))
+        return dcc.Graph(figure=graf_rel)
+    elif tab == 'tab2-3':
+        z = pd.DataFrame()
+        z2 = pd.DataFrame()
+        mb = pd.read_csv('Apoio/mb_area.csv')
+        pt = pd.read_csv('Apoio/pt_area.csv')
+        for x in sorted(ano):
+                z = pd.concat([mb[(mb['ano']==x)&(mb['a'].isin(centro))&(mb['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']), z], ignore_index=True)
+                z2 = pd.concat([pt[(pt['ano']==x)&(pt['a'].isin(centro))&(pt['area'].isin(area))].drop_duplicates(subset = ['id_discente_extensao']), z2], ignore_index=True)
+        evo = pd.DataFrame(columns=['centro','ano','media'])
+        for i in centro:
+                for x in sorted(ano):
+                        b = []
+                        b.append(i)
+                        b.append(x)
+                        if len(z[(z['ano']==x)&(z['a']==i)]['id_projeto'].unique()) != 0:
+                                if x == 2020:
+                                        b.append(len(z2[(z2['ano']==x)&(z2['a']==i)]['id_discente_extensao'].unique())/len(z[(z['ano']==x)&(z['a']==i)]['id_projeto'].unique()))
+                                else:
+                                        b.append((len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DISCENTE')]['id_pessoa'].unique()))/len(z[(z['ano']==x)&(z['a']==i)]['id_projeto'].unique()))
+                        else:
+                                b.append(0)
+                        ins(evo, b)
+        evo[['media']] = evo[['media']].applymap(lambda x : "%.2f" % x)
+        evo = evo.sort_values(['ano','centro'])
+        graf_rel = make_subplots(rows=1, cols=1,row_titles = ['Razão Alunos/Projeto'],  shared_yaxes=True)
+        for a in ano:
+                graf_rel.add_trace(go.Bar(x=evo[evo['ano']==a]['centro'].to_list(), y=evo[evo['ano']==a]['media'].to_list(), name=str(a), text=evo[evo['ano']==a]['media'].to_list(), textposition='auto',),1,1)
+                graf_rel.update_layout(coloraxis=dict(colorscale='Bluered_r'), showlegend=True)
+                graf_rel.update_traces(marker=dict(line=dict(color='#000000', width=0.5)))
+        return dcc.Graph(figure=graf_rel)
+    elif tab == 'tab2-4':
+        evo = pd.read_csv('Apoio/dis-pro_area.csv')
+        graf_rel = make_subplots(rows=1, cols=1,  shared_yaxes=True)
+        for a in ano:
+                graf_rel.add_trace(go.Scatter(x=evo[(evo['ano']==a)&(evo['centros'].isin(centro))&(evo['area'].isin(area))].groupby(['projetos'])['discentes'].sum().reset_index(level=0)['projetos'].to_list(), y=evo[(evo['ano']==a)&(evo['centros'].isin(centro))&(evo['area'].isin(area))].groupby(['projetos'])['discentes'].sum().reset_index(level=0)['discentes'].to_list(), name=str(a), mode='markers'),1,1)
+                graf_rel.update_layout(coloraxis=dict(colorscale='Bluered_r'), showlegend=True)
+        graf_rel.update_layout(go.Layout(yaxis={'title':'Numero de Projetos'},xaxis={'title': 'Quantidade de discentes'}))
+        return dcc.Graph(figure=graf_rel)
+
+
+@app.callback(
+        Output("rafa2", "style"),
+        [Input("area2", "value")]
+)
+def teste(area):
+        return {'display':'none'}
+
+
+
+@app.callback(
+	[Output("area2", "value"),Output("modal_52", "is_open")],
+	[Input("centro2", "value"), Input("ano2", "value"), Input('rafa2','style'),Input("close_52", "n_clicks")],
+	[State("area2", "value"),State("modal_52", "is_open")],
+
+)
+def flag(centro,ano,rafa,n_rel, area, is_open_rel):
+        mb = pd.read_csv('Apoio/mb_area.csv')
+        a = list(set(mb[(mb['a'].isin(centro))&(mb['ano'].isin(ano))]['area'].dropna()))
+        if 'Todas as areas' in area:
+                print ('oi')
+                return [a,is_open_rel]
+        if len(area) == 0:
+                print('oi1')
+                return [a[0], not is_open_rel]
+        else:
+                print('oi4')
+                if n_rel:
+                        print('oi2')
+                        if is_open_rel == True:
+                                print('oi3')
+                                return [area, not is_open_rel]
+                        return [area, is_open_rel]
+                return [area, is_open_rel]
+            
+	 
+@app.callback(
+	[Output("centro2", "value"),Output("modal_32", "is_open")],
+	[Input("ano2", "value"), Input("close_32", "n_clicks")],
+	[State("centro2", "value"),State("modal_32", "is_open")],
+
+)
+def limite_centros(ano,n_rel, centro,is_open_rel):
+	if 'Todos os centros' in centro:
+		return [['CCHLA','CCS','CCA','CT','CCEN','CCTA','CCAE','CEAR','CCM','CTDR','CE','CBIOTEC','CCHSA','CCSA','CI','CCJ'],is_open_rel]
+	if len(centro) == 0:
+		return [['CEAR'], not is_open_rel]
+	else:
+		if n_rel:
+			if is_open_rel == True:
+				return [centro, not is_open_rel]
+			return [centro, is_open_rel]
+		return [centro, is_open_rel]
+
+
+
+@app.callback(
+	[Output("ano2", "value"),Output("modal_42", "is_open")],
+	[Input("centro2", "value"),Input("close_42", "n_clicks")],
+	[State("ano2", "value"),State("modal_42", "is_open")],
+
+)
+
+def flag(centro,n_rel, ano, is_open_rel):
+        if 'Todos os anos' in ano:
+                return [[2017,2018,2019,2020],is_open_rel]
+        if len(ano) == 0:
+                return [[2020], not is_open_rel]
+        else:
+                if n_rel:
+                        if is_open_rel == True:
+                                return [ano, not is_open_rel]
+                        return [ano, is_open_rel]
+                return [ano, is_open_rel]
+
+
+
+
+
+
+
+
+@app.callback(
+	Output("relatorio_discentes2", "children"),
+	[Input("centro2", "value"),Input("ano2", "value"),
+         Input("tabs-example2","value")]
+
+)
+
+def relatorio_discentes(centro,ano,tab):
+        centro=", ".join(str(x) for x in centro)
+        ano=", ".join(str(x) for x in sorted(ano))
+        if tab == 'tab2-1':
+                return f'''O gráfico analisado é a relação entre Discentes/Docentes, a fim de visualizar o envolvimento dos discentes 
+                                em projetos de extensão nos anos de {ano}. Podemos analisar que, como escolhido, está sendo filtrado em apenas 
+                                os centros: {centro} para serem visualizados. Esses dados foram representados em um grafico de barras. Com esses resultados pode-se 
+                                analisar os centros que possuem mais docentes que discentes, quando os valores obtidos forem menores que 1, e os que possuem 
+                                mais alunos que professores, para valores maiores que 1.'''
+        elif tab == 'tab2-2':
+                return f'''O gráfico analisado é o evolutivo dos discentes por centro, a fim de visualizar o envolvimento dos discentes 
+                                em projetos de extensão nos anos de {ano}. Podemos analisar que, como escolhido, está sendo filtrado em apenas 
+                                os centros: {centro} para serem visualizados. Esses dados foram representados em um grafico de barras. Com esses resultados pode-se 
+                                analisar os centros que atraem mais alunos para projetos de estensão e nos permite fazer um comparativo com os outros centros.'''
+        elif tab == 'tab2-3':
+                return f'''O gráfico analisado é a relação entre Discentes/Projeto, a fim de visualizar o envolvimento dos discentes 
+                                em projetos de extensão nos anos de {ano}. Podemos analisar que, como escolhido, está sendo filtrado em apenas 
+                                os centros: {centro} para serem visualizados. Esses dados foram representados em um grafico de barras. Com esses resultados pode-se 
+                                analisar os centros que possuem a maior média de discentes por projetos.'''
+        elif tab == 'tab2-4':
+                return f'''O gráfico analisado é a relação entre Discentes/Projeto, a fim de visualizar a quantidade de projetos que possuem apenas um discente,
+                                dois discentes e assim sucessivamente, 
+                                nos anos de {ano}. Podemos analisar que, como escolhido, está sendo filtrado em apenas 
+                                os centros: {centro} para serem visualizados. Esses dados foram representados em um grafico de dispersão. Com esses resultados pode-se 
+                                analisar os projetos que possuem mais discentes envolvidos.'''
+
+        
+        
+
+@app.callback(
+	Output("card2", "children"),
+	[Input("tabs-example2","value")]
+)
+
+def graf_tit(tab):
+        if tab == 'tab2-1':
+                return 'Gráfico da Relação de Discentes/Docentes por Centro'
+        elif tab == 'tab2-2':
+                return 'Gráfico Evolutivo de Discentes por Centro'
+        elif tab == 'tab2-3':
+                return 'Gráfico da Media de Discentes por Centro'
+        elif tab == 'tab2-4':
+                return 'Gráfico da Relação de Discentes/Projeto por Centro'
+
+
+###RAFAEL3###
+
+@app.callback(
+	Output("graph_docentes_23", "style"),
+	[Input("aba-example3","value")],
+)
+def update_layout_docentes(abas):
+	print(abas,flush=True)
+	if abas == 'aba3-1':
+		return {'display':'none', 'max-width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
+	else:
+		return {'display':'block', 'max-width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
+
+
+
+@app.callback(
+	Output("graph_docentes3", "style"),
+	[Input("aba-example3","value")],
+)
+def update_layout_docentes(abas):
+	print(abas,flush=True)
+	if abas == 'aba3-1':
+		return {'display':'block', 'max-width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
+	else:
+		return {'display':'none', 'max-width': '100%', 'margin-left': 'auto', 'margin-right': 'auto'}
+
+
+@app.callback(
+        [Output("graph_docentes3", "src"),Output("graph_docentes_23", "children")],
+        [Input("centros3", "value"), Input('area3','value'),
+        Input("anos3", "value"),Input("aba-example3","value"), Input('rafa3','style')],
+)
+def update_graph_docentes(centros,area , anos,abas,rafa3):
+        print(rafa3)
+        print(abas,flush=True)
+        if abas == 'aba3-1':
+                df_ = pd.read_csv("Apoio/mb_area.csv")
+
+                meio = 0
+                sete_oito = 0
+                sete_nove = 0
+                oito_nove = 0 
+                sete_vinte = 0 
+                oito_vinte = 0
+                nove_vinte = 0    
+                result_df_2017 = []
+                result_df_2018 = []
+                result_df_2019 = []
+                result_df_2020 = []
+
+                df_ = df_[df_.a.isin(centros)]
+
+                if 2017 in anos: 
+                        df_2017 = df_[df_['ano']==2017] 
+                        result_df_2017 = df_2017[(df_2017['ano']==2017)&(df_2017['a'].isin(centros))&(df_2017['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']) 
+                if 2018 in anos:
+                        df_2018 = df_[df_['ano']==2018]
+                        result_df_2018 = df_2018[(df_2018['ano']==2018)&(df_2018['a'].isin(centros))&(df_2018['area'].isin(area))].drop_duplicates(subset = ['id_pessoa'])
+                if 2019 in anos:
+                        df_2019 = df_[df_['ano']==2019]
+                        result_df_2019 = df_2019[(df_2019['ano']==2019)&(df_2019['a'].isin(centros))&(df_2019['area'].isin(area))].drop_duplicates(subset = ['id_pessoa'])
+                if 2020 in anos:
+                        df_2020 = df_[df_['ano']==2020]
+                        result_df_2020 = df_2020[(df_2020['ano']==2020)&(df_2020['a'].isin(centros))&(df_2020['area'].isin(area))].drop_duplicates(subset = ['id_pessoa'])
+
+                if 2017 in anos and 2018 in anos and 2019 in anos:
+                        meio = len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2018['id_pessoa'])) & set(list(result_df_2019['id_pessoa']))))
+                if 2017 in anos and 2018 in anos and 2020 in anos:
+                        meio = len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2018['id_pessoa'])) & set(list(result_df_2020['id_pessoa']))))
+                if 2018 in anos and 2019 in anos and 2020 in anos:
+                        meio = len(list(set(list(result_df_2018['id_pessoa'])) & set(list(result_df_2019['id_pessoa'])) & set(list(result_df_2020['id_pessoa']))))
+                if 2017 in anos and 2019 in anos and 2020 in anos:
+                        meio = len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2019['id_pessoa'])) & set(list(result_df_2020['id_pessoa']))))
+
+                print(meio)
+
+
+                if 2017 in anos and 2018 in anos: 
+                        sete_oito = len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2018['id_pessoa'])))) - meio
+                if 2017 in anos and 2019 in anos: 
+                        sete_nove = len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2019['id_pessoa'])))) - meio
+                if 2018 in anos and 2019 in anos:
+                        oito_nove =  len(list(set(list(result_df_2018['id_pessoa'])) & set(list(result_df_2019['id_pessoa'])))) - meio  
+
+                if 2017 in anos and 2020 in anos:
+                        sete_vinte =  len(list(set(list(result_df_2017['id_pessoa'])) & set(list(result_df_2020['id_pessoa'])))) - meio 
+                if 2018 in anos and 2020 in anos:
+                        oito_vinte =  len(list(set(list(result_df_2018['id_pessoa'])) & set(list(result_df_2020['id_pessoa'])))) - meio 
+                if 2019 in anos and 2020 in anos:
+                        nove_vinte =  len(list(set(list(result_df_2019['id_pessoa'])) & set(list(result_df_2020['id_pessoa'])))) - meio 
+
+
+                if 2017 in anos: 
+                        sete = len(set(list(result_df_2017['id_pessoa']))) - meio - sete_oito - sete_nove - sete_vinte
+                if 2018 in anos:
+                        oito = len(set(list(result_df_2018['id_pessoa']))) - meio - sete_oito - oito_nove - oito_vinte
+                if 2019 in anos:
+                        nove = len(set(list(result_df_2019['id_pessoa']))) - meio - sete_nove - oito_nove - nove_vinte
+                if 2020 in anos:
+                        vinte = len(set(list(result_df_2020['id_pessoa']))) - meio - sete_vinte - oito_vinte - nove_vinte
+
+                plt.clf()
+
+                if 2017 in anos and 2018 in anos and 2019 in anos:
+                        v = vplt.venn3(subsets=(sete, oito, sete_oito, nove, sete_nove, oito_nove, meio), set_labels = ('2017','2018', '2019'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+
+                if 2017 in anos and 2018 in anos and 2020 in anos:
+                        v = vplt.venn3(subsets=(sete, oito, sete_oito, vinte, sete_vinte, oito_vinte, meio), set_labels = ('2017','2018', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+
+                if 2018 in anos and 2019 in anos and 2020 in anos:
+                        v = vplt.venn3(subsets=(oito, nove, oito_nove, vinte, oito_vinte, nove_vinte, meio), set_labels = ('2018','2019', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+
+                if 2017 in anos and 2019 in anos and 2020 in anos:
+                        v = vplt.venn3(subsets=(sete, nove, sete_nove, vinte, sete_vinte, nove_vinte, meio), set_labels = ('2017','2019', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+
+
+                if 2017 in anos and 2018 in anos:
+                        v = vplt.venn2(subsets={'10': sete, '01': oito, '11': sete_oito}, set_labels = ('2017', '2018'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+                if 2017 in anos and 2019 in anos:
+                        v = vplt.venn2(subsets={'10': sete, '01': nove, '11': sete_nove}, set_labels = ('2017', '2019'))
+                        plt.savefig('Apoio/venn.png',dpi=150)
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+                if 2018 in anos and 2019 in anos:
+                        v = vplt.venn2(subsets={'10': oito, '01': nove, '11': oito_nove}, set_labels = ('2018', '2019'))
+                        plt.savefig('Apoio/venn.png',dpi=150) 
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+                 
+                if 2017 in anos and 2020 in anos:
+                        v = vplt.venn2(subsets={'10': sete, '01': vinte, '11': sete_vinte}, set_labels = ('2017', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150) 
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+                 
+                 
+                if 2018 in anos and 2020 in anos:
+                        v = vplt.venn2(subsets={'10': oito, '01': vinte, '11': oito_vinte}, set_labels = ('2018', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150) 
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+                 
+                if 2019 in anos and 2020 in anos:
+                        v = vplt.venn2(subsets={'10': nove, '01': vinte, '11': nove_vinte}, set_labels = ('2019', '2020'))
+                        plt.savefig('Apoio/venn.png',dpi=150) 
+                        venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                        return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph()]
+
+
+        elif abas == 'aba3-2':
+                z = pd.DataFrame()
+                mb = pd.read_csv('Apoio/mb_area.csv')
+                for x in sorted(anos):
+                        z = pd.concat([mb[(mb['ano']==x)&(mb['a'].isin(centros))&(mb['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']), z], ignore_index=True)
+                evo = pd.DataFrame(columns=['centro','ano','quant'])
+                for i in centros:
+                        for x in sorted(anos):
+                                b = []
+                                b.append(i)
+                                b.append(x)
+                                b.append((len(z[(z['ano']==x)&(z['a']==i)&(z['categoria_membro']=='DOCENTE')]['id_pessoa'].unique())))
+                                ins(evo, b)
+                evo = evo.sort_values(['ano', 'centro'])
+                agraf_rel = make_subplots(rows=1, cols=1,row_titles = ['Quantidade de Discentes'],  shared_yaxes=True)
+                for a in anos:
+                        agraf_rel.add_trace(go.Bar(x=evo[evo['ano']==a]['centro'].to_list(), y=evo[evo['ano']==a]['quant'].to_list(), name=str(a), text=evo[evo['ano']==a]['quant'].to_list(), textposition='auto',),1,1)
+                        agraf_rel.update_layout(coloraxis=dict(colorscale='Bluered_r'), showlegend=True)
+                        agraf_rel.update_traces(marker=dict(line=dict(color='#000000', width=0.5)))
+                venn = base64.b64encode(open('Apoio/venn.png', 'rb').read())
+                agraf_rel.update_layout(height=600)
+                return ['data:image/png;base64,{}'.format(venn.decode()),dcc.Graph(figure=agraf_rel)]
+                                    
+        elif abas == 'aba3-3':
+                z = pd.DataFrame()
+                mb = pd.read_csv('Apoio/mb_area.csv')
+                for x in sorted(anos):
+                        z = pd.concat([mb[(mb['ano']==x)&(mb['a'].isin(centros))&(mb['area'].isin(area))].drop_duplicates(subset = ['id_pessoa']), z], ignore_index=True)
+                evo = pd.DataFrame(columns=['centro','ano','media'])
+                for i in centros:
+                        for x in sorted(anos):
+                                b = []
+                                b.append(i)
+                                b.append(x)
+                                if len(z[(z['ano']==x)&(z['a']==i)]['id_projeto'].unique()) != 0:
+    
