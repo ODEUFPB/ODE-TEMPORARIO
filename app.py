@@ -34,6 +34,7 @@ import matplotlib
 from operator import itemgetter #Lembrar de Acrescentar
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import io
+from projetos import projetos
 matplotlib.use('Agg')
 
 
@@ -82,6 +83,8 @@ def display_page(pathname):
 		return rafael2()
 	if pathname=='/rafael3':
 		return rafael3()
+	if pathname=='/projetos':
+		return projetos()
 	return Homepage()
 
 @app.callback(
@@ -4497,8 +4500,62 @@ def toggle_navbar_collapse(n, is_open):
     return is_open
 
 
+
+
+@app.callback(
+    Output("textarea_example", "value"),
+    [Input("projetos_projetos", "value")]
+)
+def atualiza_resumo(titulo):
+	print(titulo)
+	if titulo == ['']:
+		return ''
+
+	data_frame = pd.read_csv("Apoio/planos_trabalho_projetos_extensao_20200726.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+
+	data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava 
+
+	data_frame = data_frame[data_frame['curso_nome']==titulo] #trocar --curso_nome-- para --titulo-- com o df certo
+
+	return data_frame['plano_trabalho_objetivo']  #trocar --plano_trabalho_objetivo-- para --resumo-- com o df certo
+
+
+@app.callback(
+    Output('projetos_projetos', 'options'),
+    [Input('anos_projetos', 'value'),Input('centros_projetos', 'value'),Input('entrada_titulo_projetos', 'value'),Input('btn-nclicks-1', 'n_clicks')]
+)
+def update_output(anos,centros,titulo,btn1):
+	changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+	if 'btn-nclicks-1' in changed_id:
+		data_frame = pd.read_csv("Apoio/planos_trabalho_projetos_extensao_20200726.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+		data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
+
+		#data_frame = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
+		#data_frame = data_frame['centro'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
+
+		pega_palavra = list(titulo.split(" ")) 
+
+		lista_de_titulos = list(data_frame['curso_nome']) #trocar --curso_nome-- para --titulo-- com o df certo
+		flag = list(lista_de_titulos)
+
+		for x in pega_palavra:
+			primeira = x.lower()
+			for y in lista_de_titulos:
+				segunda = y.lower()
+				if primeira in segunda:
+					ok = ''
+				else:
+					if y in flag:
+						flag.remove(y)
+					ok=''
+
+
+		return [{'label': j, 'value': j} for j in flag]
+	
+	return ['']
+
 if __name__ == '__main__': 
-    app.run_server(port=8990)                            
+    app.run_server(port=3070)                            
 
 
 
