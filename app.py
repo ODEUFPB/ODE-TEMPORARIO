@@ -4336,6 +4336,8 @@ def teste(area):
         return {'display':'none'}
 
 
+    
+#Projeto 25/11/2020 - 
 @app.callback(
 	[Output("area3", "value"),Output("modal_53", "is_open")],
 	[Input("centros3", "value"), Input("anos3", "value"), Input('rafa3','style'),Input("close_53", "n_clicks")],
@@ -4502,6 +4504,7 @@ def toggle_navbar_collapse(n, is_open):
 
 
 
+#Aba Projetos
 @app.callback(
     Output("textarea_example", "value"),
     [Input("projetos_projetos", "value")]
@@ -4511,13 +4514,13 @@ def atualiza_resumo(titulo):
 	if titulo == ['']:
 		return ''
 
-	data_frame = pd.read_csv("Apoio/planos_trabalho_projetos_extensao_20200726.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+	data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
 
-	data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava 
+	#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava 
 
-	data_frame = data_frame[data_frame['curso_nome']==titulo] #trocar --curso_nome-- para --titulo-- com o df certo
+	data_frame = data_frame[data_frame['titulo']==titulo] #trocar --curso_nome-- para --titulo-- com o df certo
 
-	return data_frame['plano_trabalho_objetivo']  #trocar --plano_trabalho_objetivo-- para --resumo-- com o df certo
+	return data_frame['resumo']  #trocar --plano_trabalho_objetivo-- para --resumo-- com o df certo
 
 
 @app.callback(
@@ -4527,15 +4530,15 @@ def atualiza_resumo(titulo):
 def update_output(anos,centros,titulo,btn1):
 	changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 	if 'btn-nclicks-1' in changed_id:
-		data_frame = pd.read_csv("Apoio/planos_trabalho_projetos_extensao_20200726.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
-		data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
+		data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+		#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
 
-		#data_frame = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
-		#data_frame = data_frame['centro'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
+		data_frame = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
+		data_frame = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
 
 		pega_palavra = list(titulo.split(" ")) 
 
-		lista_de_titulos = list(data_frame['curso_nome']) #trocar --curso_nome-- para --titulo-- com o df certo
+		lista_de_titulos = list(data_frame['titulo']) #trocar --curso_nome-- para --titulo-- com o df certo
 		flag = list(lista_de_titulos)
 
 		for x in pega_palavra:
