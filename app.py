@@ -4514,7 +4514,7 @@ def atualiza_resumo(titulo):
 	if titulo == ['']:
 		return ''
 
-	data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+	data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
 
 	#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava 
 
@@ -4530,11 +4530,15 @@ def atualiza_resumo(titulo):
 def update_output(anos,centros,titulo,btn1):
 	changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 	if 'btn-nclicks-1' in changed_id:
-		data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig',sep=';') #trocar o arquivo csv
+		data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
 		#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
 
-		data_frame = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
-		data_frame = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
+		data_frame_flag = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
+		data_frame = data_frame[data_frame_flag]
+
+		print(data_frame.head())
+		data_frame_flag = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
+		data_frame = data_frame[data_frame_flag]
 
 		pega_palavra = list(titulo.split(" ")) 
 
