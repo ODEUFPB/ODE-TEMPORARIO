@@ -92,16 +92,21 @@ html.Button('Pesquisar', id='btn-nclicks-1', n_clicks=0),
 
 html.Div(html.Br()),
 html.H4("Escolha um projeto para ver o resumo:", style={'font-size':19}),
-        dcc.Dropdown(
+        dbc.Select(
         id = 'projetos_projetos',  
         options=[
             {'label': j, 'value': j} for j in []  
         ],
-        value=[''], 
-        placeholder="Selecione o projeto",
-        multi=False,
-    searchable=False
+        value=[''],   
+        ),
+
+
+
+
+        ]
     ),
+]
+
 
 
 
