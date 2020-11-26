@@ -38,7 +38,7 @@ nav = Navbar()
 
 
 centros = ['CCS','CEAR','CCEN','CT','CCM','CBIOTEC','CTDR','CCHLA','CCTA','CCHSA','CCSA','CI','CCAE','CCJ','CCA','CE']
-anos = [2017,2018,2019,2020]
+anos = [2017,2018,2019]
 
 
 card_content = [
@@ -53,7 +53,7 @@ card_content = [
         options=[
             {'label': j, 'value': j} for j in anos  
         ],
-        value=['2020'],   
+        value=['2019'],   
         multi=True,
     searchable=False
     ),
