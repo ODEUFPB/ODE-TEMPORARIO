@@ -4556,7 +4556,7 @@ def update_output(anos,centros,titulo,btn1):
 					ok=''
 
 
-		return [{'label': j.capitalize()[:50]+"...", 'value': j} for j in flag]
+		return [{'label':  j.capitalize()[:40]+"..." if (len(j)>40) else j, 'value': j} for j in flag]
 	
 	return ['']
 
