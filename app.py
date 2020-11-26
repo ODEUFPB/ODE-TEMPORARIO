@@ -4528,14 +4528,17 @@ def atualiza_resumo(titulo):
     [Input('anos_projetos', 'value'),Input('centros_projetos', 'value'),Input('entrada_titulo_projetos', 'value'),Input('btn-nclicks-1', 'n_clicks')]
 )
 def update_output(anos,centros,titulo,btn1):
+	flag = []
 	changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 	if 'btn-nclicks-1' in changed_id:
+		print(titulo)
 		data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
 		#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
 
-		data_frame = data_frame[data_frame['ano'].isin(anos)]
+		data_frame_flag = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
+		data_frame = data_frame[data_frame_flag]
 
-		
+		print(data_frame.head())
 		data_frame_flag = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
 		data_frame = data_frame[data_frame_flag]
 
@@ -4555,11 +4558,10 @@ def update_output(anos,centros,titulo,btn1):
 						flag.remove(y)
 					ok=''
 
-
-		#return [{'label':  j.capitalize()[:40]+"..." if (len(j)>40) else j, 'value': j} for j in flag]
+		print(flag)
 		return [{'label': j, 'value': j} for j in flag]
 	
-	return ['']
+	return []
 
 if __name__ == '__main__': 
     app.run_server(port=3070)                            
