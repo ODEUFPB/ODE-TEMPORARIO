@@ -51,12 +51,9 @@ card_content = [
         dcc.Dropdown(
         id = 'anos_projetos',  
         options=[
-		'label':2017, 'value':2017
-		'label':2018, 'value':2018
-		'label':2019, 'value':2019
+            {'label': j, 'value': j} for j in anos  
         ],
-        value=['2017'],
-	placeholder="Selecione o(s) ano(s)",
+        value=['2020'],   
         multi=True,
     searchable=False
     ),
@@ -70,8 +67,7 @@ card_content = [
         options=[
             {'label': j, 'value': j} for j in centros  
         ],
-        value=['CEAR'],
-	placeholder="Selecione o(s) centro(s)",
+        value=['CEAR'],   
         multi=True,
     searchable=False
     ),
@@ -97,8 +93,7 @@ html.H4("Escolha um projeto para ver o resumo:", style={'font-size':19}),
         options=[
             {'label': j, 'value': j} for j in []  
         ],
-        value=[''], 
-	placeholder="Selecione o projeto",
+        value=[''],   
         ),
 
 
