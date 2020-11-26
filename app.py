@@ -4535,7 +4535,7 @@ def update_output(anos,centros,titulo,btn1):
 
 		data_frame = data_frame[data_frame['ano'].isin(anos)]
 
-		print(data_frame.head())
+		
 		data_frame_flag = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
 		data_frame = data_frame[data_frame_flag]
 
@@ -4556,7 +4556,8 @@ def update_output(anos,centros,titulo,btn1):
 					ok=''
 
 
-		return [{'label':  j.capitalize()[:40]+"..." if (len(j)>40) else j, 'value': j} for j in flag]
+		#return [{'label':  j.capitalize()[:40]+"..." if (len(j)>40) else j, 'value': j} for j in flag]
+		return [{'label': j, 'value': j} for j in flag]
 	
 	return ['']
 
