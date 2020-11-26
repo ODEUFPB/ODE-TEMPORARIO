@@ -4506,12 +4506,20 @@ def toggle_navbar_collapse(n, is_open):
 
 #Aba Projetos
 @app.callback(
-    Output("textarea_example", "value"),
-    [Input("projetos_projetos", "value")]
+    Output("projetos_projetos", "value"),
+    [Input('btn-nclicks-1', 'n_clicks')]
 )
-def atualiza_resumo(titulo):
+def atualiza_resumo(n):
+	return ''
+	
+@app.callback(
+    Output("textarea_example", "value"),
+    [Input("projetos_projetos", "value"),Input('btn-nclicks-1', 'n_clicks')]
+)
+def atualiza_resumo(titulo,n):
 	print(titulo)
 	if titulo == ['']:
+		print('cheguei no test')
 		return ''
 
 	data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
@@ -4519,7 +4527,7 @@ def atualiza_resumo(titulo):
 	#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava 
 
 	data_frame = data_frame[data_frame['titulo']==titulo] #trocar --curso_nome-- para --titulo-- com o df certo
-
+	print(data_frame['resumo'])
 	return data_frame['resumo']  #trocar --plano_trabalho_objetivo-- para --resumo-- com o df certo
 
 
@@ -4538,7 +4546,6 @@ def update_output(anos,centros,titulo,btn1):
 		data_frame_flag = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
 		data_frame = data_frame[data_frame_flag]
 
-		print(data_frame.head())
 		data_frame_flag = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
 		data_frame = data_frame[data_frame_flag]
 
@@ -4558,7 +4565,6 @@ def update_output(anos,centros,titulo,btn1):
 						flag.remove(y)
 					ok=''
 
-		print(flag)
 		return [{'label': j, 'value': j} for j in flag]
 	
 	return []
