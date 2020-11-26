@@ -49,7 +49,8 @@ card_content = [
 
     html.H4("Escolha o ano desejado:", style={'font-size':19}),
         dcc.Dropdown(
-        id = 'anos_projetos',  
+        id = 'anos_projetos',
+        placeholder="Selecione o(s) ano(s)",
         options=[
             {'label': j, 'value': j} for j in anos  
         ],
@@ -63,7 +64,8 @@ card_content = [
 
         html.H4("Escolha o centro desejado:", style={'font-size':19}),
         dcc.Dropdown(
-        id = 'centros_projetos',  
+        id = 'centros_projetos',
+        placeholder="Selecione o(s) centro(s)",  
         options=[
             {'label': j, 'value': j} for j in centros  
         ],
