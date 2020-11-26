@@ -34,11 +34,13 @@ from dash.dependencies import Output, Input
 ## Navbar
 from navbar import Navbar
 
-nav = Navbar()    
+nav = Navbar()   
+
+ 
 
 
-centros = ['CCS','CEAR','CCEN','CT','CCM','CBIOTEC','CTDR','CCHLA','CCTA','CCHSA','CCSA','CI','CCAE','CCJ','CCA','CE']
-anos = [2017,2018,2019]
+centros = ['Todos os Centros','CCS','CEAR','CCEN','CT','CCM','CBIOTEC','CTDR','CCHLA','CCTA','CCHSA','CCSA','CI','CCAE','CCJ','CCA','CE']
+anos = ['Todos os Anos', 2017,2018,2019]
 
 
 card_content = [
@@ -140,7 +142,7 @@ body_1 =html.Div([
 
                ),
               dbc.Col([
-     	      jumbotron_2 
+              jumbotron_2 
 
                     ], md=8 ),
 
@@ -149,12 +151,45 @@ body_1 =html.Div([
               
 ])
 
+modal_6 = html.Div(
+    [
+        dbc.Modal(
+            [
+                dbc.ModalHeader("ERROR"),
+                dbc.ModalBody("Escolha pelo menos um ano como parâmetro de entrada de anos"),
+                dbc.ModalFooter(
+                dbc.Button("Close", id="close_6", className="ml-auto")
+                ),
+            ],
+            id="modal_6",
+        ),
+    ]
+)
+
+modal_7 = html.Div(
+    [
+        dbc.Modal(
+            [
+                dbc.ModalHeader("ERROR"),
+                dbc.ModalBody("Escolha pelo menos um centro como parâmetro de entrada de centros"),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="close_7", className="ml-auto")
+                ),
+            ],
+            id="modal_7",
+        ),
+    ]
+)
+
+
 
 
 def projetos():
     layout = html.Div([
     nav,
-	body_1,
+    body_1,
+    modal_6,
+    modal_7
     ])
     return layout
 

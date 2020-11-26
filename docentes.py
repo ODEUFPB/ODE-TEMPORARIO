@@ -206,6 +206,8 @@ modal_3a = html.Div(
 
 
 
+
+
 def docente():
     layout = html.Div([
     nav,

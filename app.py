@@ -4501,7 +4501,44 @@ def toggle_navbar_collapse(n, is_open):
         return not is_open
     return is_open
 
+@app.callback(
+	[Output("centros_projetos", "value"),Output("modal_7", "is_open")],
+	[Input("anos_projetos", "value"), Input("close_7", "n_clicks")],
+	[State("centros_projetos", "value"),State("modal_7", "is_open")],
 
+)
+def limite_centros(ano,n_rel, centro,is_open_rel):
+	if 'Todos os Centros' in centro:
+		return [['CCHLA','CCS','CCA','CT','CCEN','CCTA','CCAE','CEAR','CCM','CTDR','CE','CBIOTEC','CCHSA','CCSA','CI','CCJ'],is_open_rel]
+	if len(centro) == 0:
+		return [['CEAR'], not is_open_rel]
+	else:
+		if n_rel:
+			if is_open_rel == True:
+				return [centro, not is_open_rel]
+			return [centro, is_open_rel]
+		return [centro, is_open_rel]
+
+
+
+@app.callback(
+	[Output("anos_projetos", "value"),Output("modal_6", "is_open")],
+	[Input("centros_projetos", "value"),Input("close_6", "n_clicks")],
+	[State("anos_projetos", "value"),State("modal_6", "is_open")],
+
+)
+
+def flag(centro,n_rel, ano, is_open_rel):
+	if 'Todos os Anos' in ano:
+		return [[2017,2018,2019],is_open_rel]
+	if len(ano) == 0:
+		return [[2019], not is_open_rel]
+	else:
+		if n_rel:
+			if is_open_rel == True:
+				return [ano, not is_open_rel]
+			return [ano, is_open_rel]
+		return [ano, is_open_rel]
 
 
 #Aba Projetos
