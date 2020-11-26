@@ -4519,7 +4519,7 @@ def atualiza_resumo(n):
 def atualiza_resumo(titulo,n):
 	print(titulo)
 	if titulo == ['']:
-		print('cheguei no test')
+		#print('cheguei no test')
 		return ''
 
 	data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
@@ -4565,7 +4565,12 @@ def update_output(anos,centros,titulo,btn1):
 						flag.remove(y)
 					ok=''
 
+
 		return [{'label': j, 'value': j} for j in flag]
+
+		return [{'label': j, 'value': j} for j in flag]
+
+		return [{'label': j, 'value': j} for j in flag_padrao]
 	
 	return []
 
