@@ -4533,8 +4533,7 @@ def update_output(anos,centros,titulo,btn1):
 		data_frame = pd.read_csv("Apoio/definitivo2.csv", encoding='utf-8-sig') #trocar o arquivo csv
 		#data_frame = data_frame.drop_duplicates(subset=['curso_nome'], keep='last')  #apagar essa linha foi so pra diminuir enquanto eu testava
 
-		data_frame_flag = data_frame['ano'].isin(anos) #tirar o comentario quando tiver recebendo o df certo
-		data_frame = data_frame[data_frame_flag]
+		data_frame = data_frame[data_frame['ano'].isin(anos)]
 
 		print(data_frame.head())
 		data_frame_flag = data_frame['unidade_proponente'].isin(centros) #tirar o comentario quando tiver recebendo o df certo
@@ -4557,7 +4556,7 @@ def update_output(anos,centros,titulo,btn1):
 					ok=''
 
 
-		return [{'label': j, 'value': j} for j in flag]
+		return [{'label': j.capitalize()[:50]+"...", 'value': j} for j in flag]
 	
 	return ['']
 
